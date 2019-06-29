@@ -6,8 +6,12 @@ import android.widget.TextView
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.view.View
 import android.os.Handler
+import kotlin.random.Random
+
+
 
 class MainActivity : AppCompatActivity() {
     private var mGestureDetector: GestureDetector? = null
@@ -24,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
         val messageView: TextView = findViewById(R.id.textView1)
         messageView.text = "0"
@@ -40,15 +45,28 @@ class MainActivity : AppCompatActivity() {
         // フリックイベント
         override fun onFling(event1: MotionEvent, event2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
             try {
+                println("@@@@")
                 // 移動距離・スピードを出力
                 val distance_y = Math.abs(event1.y - event2.y)
                 val velocity_y = Math.abs(velocityY)
                 val messageView: TextView = findViewById(R.id.textView1)
                 val chinanaImg: ImageView = findViewById(R.id.chinanago)
+                val layout = findViewById<LinearLayout>(R.id.mainLayout)
+
+                println("@@@@")
+
 //                messageView.text = "縦の移動距離:$distance_y 縦の移動スピード:$velocity_y"
 
                 // X軸の移動距離が大きすぎる場合
                 if (Math.abs(event1.x - event2.x) > SWIPE_MAX_OFF_PATH) {
+                    println("oooo")
+//                    val lp = LinearLayout.LayoutParams(100, 150)
+//                    lp.leftMargin = 200
+//                    lp.topMargin = 250
+//
+//                    layout.addView(chinanaImg,lp)
+
+                    println("bbbb")
 //                    messageView.text = "横の移動距離が大きすぎます"
 
                     // 開始位置から終了位置の移動距離が指定値より大きい
@@ -66,12 +84,20 @@ class MainActivity : AppCompatActivity() {
                     chinanaImg.setVisibility(View.INVISIBLE)
 
 
+
                     if (visible_flg) {
                         println("@@@@")
                         flick_count = flick_count + 1
                         mHandler.post {
                             // この部分はUIスレッドで動作する
                             Thread.sleep(1000)
+                            val imageWidth = Random.nextInt(2000)
+                            val imageHeight = Random.nextInt(3000)
+//                            val imageWidth = 300
+//                            val imageHeight = 300
+
+                            val layoutParams = LinearLayout.LayoutParams(imageWidth, imageHeight)
+                            chinanaImg.layoutParams = layoutParams
                             chinanaImg.setVisibility(View.VISIBLE)
                             visible_flg = true
                         }
