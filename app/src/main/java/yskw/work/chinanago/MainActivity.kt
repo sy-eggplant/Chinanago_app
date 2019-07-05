@@ -3,11 +3,13 @@ package yskw.work.chinanago
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.Button
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.view.View
+import android.content.Intent
 import android.os.Handler
 import kotlin.random.Random
 
@@ -33,6 +35,11 @@ class MainActivity : AppCompatActivity() {
         val messageView: TextView = findViewById(R.id.textView1)
         messageView.text = "0"
         mGestureDetector = GestureDetector(this, mOnGestureListener) // => 忘れない
+        val button: Button = findViewById(R.id.button)
+        button.setOnClickListener {
+            val intent = Intent(this, DictionalyActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     // タッチイベント
@@ -52,8 +59,6 @@ class MainActivity : AppCompatActivity() {
                 val messageView: TextView = findViewById(R.id.textView1)
                 val chinanaImg: ImageView = findViewById(R.id.chinanago)
                 val layout = findViewById<LinearLayout>(R.id.mainLayout)
-
-                println("@@@@")
 
 //                messageView.text = "縦の移動距離:$distance_y 縦の移動スピード:$velocity_y"
 
