@@ -21,8 +21,6 @@ class MainActivity : AppCompatActivity() {
     private val SWIPE_MIN_DISTANCE = 50
     // Y軸最低スワイプスピード
     private val SWIPE_THRESHOLD_VELOCITY = 200
-    // X軸の移動距離 これ以上なら縦移動を判定しない
-    private val SWIPE_MAX_OFF_PATH = 200
 
     private var flick_count = 0
     private var visible_flg = true
@@ -32,8 +30,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-        val messageView: TextView = findViewById(R.id.textView1)
-        messageView.text = "0"
+
         mGestureDetector = GestureDetector(this, mOnGestureListener) // => 忘れない
         val button: Button = findViewById(R.id.button)
         button.setOnClickListener {
@@ -52,55 +49,25 @@ class MainActivity : AppCompatActivity() {
         // フリックイベント
         override fun onFling(event1: MotionEvent, event2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
             try {
-                println("@@@@")
-                // 移動距離・スピードを出力
-                val distance_y = Math.abs(event1.y - event2.y)
-                val velocity_y = Math.abs(velocityY)
                 val messageView: TextView = findViewById(R.id.textView1)
                 val chinanaImg: ImageView = findViewById(R.id.chinanago)
-                val layout = findViewById<LinearLayout>(R.id.mainLayout)
 
-//                messageView.text = "縦の移動距離:$distance_y 縦の移動スピード:$velocity_y"
-
-                // X軸の移動距離が大きすぎる場合
-                if (Math.abs(event1.x - event2.x) > SWIPE_MAX_OFF_PATH) {
-                    println("oooo")
-//                    val lp = LinearLayout.LayoutParams(100, 150)
-//                    lp.leftMargin = 200
-//                    lp.topMargin = 250
-//
-//                    layout.addView(chinanaImg,lp)
-
-                    println("bbbb")
-//                    messageView.text = "横の移動距離が大きすぎます"
-
-                    // 開始位置から終了位置の移動距離が指定値より大きい
-                    // Y軸の移動速度が指定値より大きい
-                } else if (event2.y - event1.y > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
-//                    messageView.text = "上から下"
+                if (event2.y - event1.y > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+                    // 上から下
                     chinanaImg.setVisibility(View.VISIBLE)
                     visible_flg = true
 
-                    // 終了位置から開始位置の移動距離が指定値より大きい
-                    // Y軸の移動速度が指定値より大きい
                 } else if (event1.y - event2.y > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
-
-                    println("flick")
+                    // 下から上、フリック
                     chinanaImg.setVisibility(View.INVISIBLE)
 
-
-
                     if (visible_flg) {
-                        println("@@@@")
-                        flick_count = flick_count + 1
+                        flick_count++
                         mHandler.post {
-                            // この部分はUIスレッドで動作する
+                            // スレッド内、1秒待つ
                             Thread.sleep(1000)
-                            val imageWidth = Random.nextInt(2000)
-                            val imageHeight = Random.nextInt(3000)
-//                            val imageWidth = 300
-//                            val imageHeight = 300
-
+                            val imageWidth = Random.nextInt(1000)
+                            val imageHeight = Random.nextInt(2000)
                             val layoutParams = LinearLayout.LayoutParams(imageWidth, imageHeight)
                             chinanaImg.layoutParams = layoutParams
                             chinanaImg.setVisibility(View.VISIBLE)
@@ -108,7 +75,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     visible_flg = false
-//                    messageView.text = "下から上"
                     messageView.text = "$flick_count"
                 }
 
@@ -117,10 +83,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             return false
-        }
-        // 長押し
-        override fun onLongPress(e: MotionEvent?) {
-            super.onLongPress(e)
         }
     }
 
